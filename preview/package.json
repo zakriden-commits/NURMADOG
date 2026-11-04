@@ -1,0 +1,12 @@
+{
+  "name": "nurmadog-preview",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Interactive preview for NURMADOG.glb",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "three": "^0.172.0"
+  }
+}

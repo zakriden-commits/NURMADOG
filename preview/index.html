@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NURMADOG — 3D боец со скелетом (GLB)</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #0b0c10; }
+  #canvas { width: 100%; height: 100%; display: block; }
+  #hud {
+    position: absolute; top: 16px; left: 16px; color: #e8e8e8;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    font-size: 14px; line-height: 1.45;
+    pointer-events: none; text-shadow: 0 0 8px #000;
+  }
+  #hud b { color: #4fc3f7; }
+  a { color: #82b1ff; }
+</style>
+</head>
+<body>
+<div id="canvas"></div>
+<div id="hud">
+  <b>NURMADOG.glb</b> — процедурная модель бойца со скелетом (17 костей, skinning, idle-анимация)<br/>
+  Мышь: вращать • Колесо: zoom • ЛКМ+движение: перемещать камеру<br/>
+  Источник: <a href="../build_nurmadog.py">build_nurmadog.py</a> &nbsp;|&nbsp;
+  <a href="../nurmadog.glb">скачать GLB</a>
+</div>
+<script type="importmap">
+{
+  "imports": {
+    "three": "../node_modules/three/build/three.module.js",
+    "three/addons/": "../node_modules/three/examples/jsm/"
+  }
+</script>
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+const container = document.getElementById("canvas");
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0b0c10);
+scene.fog = new THREE.Fog(0x0b0c10, 1, 24);
+
+const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 60);
+camera.position.set(0, 1.1, 2.6);
+camera.lookAt(0, 0.85, 0);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setSize(container.clientWidth, container.clientHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+container.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 0.85, 0);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.autoRotate = false;
+controls.minDistance = 0.8;
+controls.maxDistance = 10;
+
+const ambient = new THREE.AmbientLight(0xffffff, 0.55);
+scene.add(ambient);
+const dir = new THREE.DirectionalLight(0xffffff, 1.1);
+dir.position.set(2, 5, 3);
+scene.add(dir);
+
+const grid = new THREE.GridHelper(10, 40, 0x3a3a3a, 0x1a1a1a);
+scene.add(grid);
+const axes = new THREE.AxesHelper(0.7);
+scene.add(axes);
+
+const loader = new GLTFLoader();
+loader.load("../nurmadog.glb", (gltf) => {
+  const model = gltf.scene;
+  scene.add(model);
+
+  if (gltf.animations && gltf.animations.length) {
+    const mixer = new THREE.AnimationMixer(model);
+    const clip = gltf.animations[0];
+    mixer.clipAction(clip).play();
+    const clock = new THREE.Clock();
+    const animate = () => {
+      const dt = clock.getDelta();
+      mixer.update(dt);
+      controls.update();
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    };
+    animate();
+  } else {
+    controls.update();
+    renderer.render(scene, camera);
+  }
+}, undefined, (err) => {
+  console.error(err);
+  document.getElementById("hud").innerHTML += "<br/><b style='color:#ff6b6b'>Ошибка загрузки GLB — проверьте консоль.</b>";
+});
+
+window.addEventListener("resize", () => {
+  camera.aspect = container.clientWidth / container.clientHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(container.clientWidth, container.clientHeight);
+});
+</script>
+</body>
+</html>
