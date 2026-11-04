@@ -23,7 +23,7 @@
   <b>NURMADOG.glb</b> — процедурная модель бойца со скелетом (17 костей, skinning, idle-анимация)<br/>
   Мышь: вращать • Колесо: zoom • ЛКМ+движение: перемещать камеру<br/>
   Источник: <a href="../build_nurmadog.py">build_nurmadog.py</a> &nbsp;|&nbsp;
-  <a href="../nurmadog.glb">скачать GLB</a>
+  <a href="../nurmadog/nurmadog.glb">скачать GLB</a>
 </div>
 <script type="importmap">
 {
@@ -71,7 +71,7 @@ const axes = new THREE.AxesHelper(0.7);
 scene.add(axes);
 
 const loader = new GLTFLoader();
-loader.load("../nurmadog.glb", (gltf) => {
+  loader.load("../nurmadog/nurmadog.glb", (gltf) => {
   const model = gltf.scene;
   scene.add(model);
 

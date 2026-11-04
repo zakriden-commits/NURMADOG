@@ -560,11 +560,11 @@ def main():
           f"triangles gear: {index_sets[GEAR].size // 3}, bones: {N_BONES}")
 
     gltf = build_gltf(positions, normals, joints, weights, index_sets)
-    gltf.save_binary("nurmadog.glb")
-    print("saved nurmadog.glb")
+    gltf.save_binary("nurmadog/nurmadog.glb")
+    print("saved nurmadog/nurmadog.glb")
 
     # валидация: перечитаем файл
-    back = GLTF2().load("nurmadog.glb")
+    back = GLTF2().load("nurmadog/nurmadog.glb")
     print("nodes:", len(back.nodes), "meshes:", len(back.meshes),
           "skins:", len(back.skins), "anims:", len(back.animations),
           "accessors:", len(back.accessors), "bufferViews:", len(back.bufferViews))
