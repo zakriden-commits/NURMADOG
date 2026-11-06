@@ -1,0 +1,41 @@
+{
+  "name": "sasny-battle",
+  "version": "1.0.0",
+  "description": "САСНЫЙ — стрим-баттл до 100 очков",
+  "author": "Sasny",
+  "main": "electron.cjs",
+  "scripts": {
+    "start": "electron .",
+    "dev": "node server.cjs",
+    "test": "node --test",
+    "build:win": "electron-builder --win portable --x64"
+  },
+  "devDependencies": {
+    "electron": "^45.2.3",
+    "electron-builder": "^26.0.12",
+    "jsdom": "^31.0.0"
+  },
+  "build": {
+    "appId": "stream.sasny.battle",
+    "productName": "САСНЫЙ",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "index.html",
+      "style.css",
+      "game.js",
+      "rules.cjs",
+      "electron.cjs",
+      "assets/**/*"
+    ],
+    "win": {
+      "target": "portable",
+      "icon": "assets/icon.ico",
+      "signAndEditExecutable": false
+    },
+    "portable": {
+      "artifactName": "SASNY-Game.exe"
+    }
+  }
+}
