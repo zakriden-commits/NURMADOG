@@ -7,3 +7,6 @@ video/audio/mix.wav
 video/audio/mix2_raw.wav
 video/audio/mix2.wav
 video/out/video_v2.mp4
+belt/out/video_only.mp4
+belt/audio.wav
+belt/still_*.png
