@@ -1,0 +1,6 @@
+video/frames/*.png
+video/audio/*.f32
+video/audio/mix_raw.wav
+video/out/video_only.mp4
+__pycache__/
+video/audio/mix.wav
