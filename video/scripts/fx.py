@@ -325,3 +325,81 @@ def card(wh, color=(0, 0, 0), alpha=180, r=28, border=None, bw=6):
     d.rounded_rectangle([0, 0, w - 1, h - 1], r, fill=color + (alpha,),
                         outline=(border + (255,)) if border else None, width=bw if border else 0)
     return lay
+
+
+# ---------------------------------------------------------------- modern extras
+def glass(w, h, r=34, tint=(255, 255, 255), a=26, border=(255, 255, 255), ba=70, bw=2, sheen=0.10):
+    """Frosted panel: soft top sheen, thin border."""
+    lay = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay)
+    d.rounded_rectangle([0, 0, w - 1, h - 1], r, fill=tint + (a,), outline=border + (ba,), width=bw)
+    if sheen:
+        sheenl = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+        ds = ImageDraw.Draw(sheenl)
+        ds.rounded_rectangle([0, 0, w - 1, int(h * 0.5)], r, fill=(255, 255, 255, int(255 * sheen)))
+        lay = Image.alpha_composite(lay, sheenl)
+    return lay
+
+
+def vgrad_mask(size, start=0.0, end=1.0, from_alpha=0, to_alpha=255):
+    w, h = size
+    m = np.zeros((h, w), np.float32)
+    a, b = int(h * start), int(h * end)
+    if b > a:
+        ramp = np.linspace(from_alpha, to_alpha, b - a, dtype=np.float32)[:, None]
+        m[a:b] = ramp
+        m[b:] = to_alpha
+        m[:a] = from_alpha
+    else:
+        m[:] = to_alpha
+    return Image.fromarray(m.astype(np.uint8), "L")
+
+
+def grad_text(spr, c1, c2, angle=90):
+    """Fill the glyphs with a vertical gradient."""
+    w, h = spr.size
+    g = Image.new("RGB", (w, h))
+    px = np.zeros((h, w, 3), np.uint8)
+    t = np.linspace(0, 1, h)[:, None]
+    for i in range(3):
+        px[:, :, i] = (c1[i] + (c2[i] - c1[i]) * t).astype(np.uint8)
+    g = Image.fromarray(px)
+    g.putalpha(spr.split()[3])
+    return g
+
+
+def reflection(spr, alpha=0.22, blur=5, squash=0.55, fade=1.0):
+    r = spr.transpose(Image.FLIP_TOP_BOTTOM)
+    r = r.resize((r.width, max(1, int(r.height * squash))), Image.LANCZOS)
+    r = r.filter(ImageFilter.GaussianBlur(blur))
+    m = vgrad_mask(r.size, 0.0, fade, 255, 0)
+    a = ImageChops.multiply(r.split()[3], m)
+    r.putalpha(a.point(lambda v: int(v * alpha)))
+    return r
+
+
+def sweep(frame, t, period=5.0, alpha=26, tilt=0.45):
+    """Slow diagonal light band moving across the frame."""
+    ph = (t % period) / period
+    x = -W * 0.6 + ph * W * 1.8
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay)
+    band = 260
+    for i in range(band):
+        a_ = int(alpha * (1 - abs(i - band / 2) / (band / 2)) ** 2)
+        off = int(x + i + (i * tilt))
+        d.line([(off, 0), (off - H * tilt * 0.5, H)], fill=(255, 255, 255, a_), width=2)
+    return Image.alpha_composite(frame, lay)
+
+
+def camera(im, t, t0, t1, z0=1.0, z1=1.035, dx=0.0, dy=0.0):
+    """Ken-burns crop over a scene."""
+    k = (t - t0) / max(t1 - t0, 1e-4)
+    k = clamp(k)
+    z = z0 + (z1 - z0) * ease_io(k)
+    w, h = int(W / z), int(H / z)
+    x0 = int((W - w) / 2 + dx * (W - w) / 2 * k)
+    y0 = int((H - h) / 2 + dy * (H - h) / 2 * k)
+    x0 = max(0, min(W - w, x0))
+    y0 = max(0, min(H - h, y0))
+    return im.crop((x0, y0, x0 + w, y0 + h)).resize((W, H), Image.BILINEAR)
