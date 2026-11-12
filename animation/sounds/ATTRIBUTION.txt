@@ -1,0 +1,7 @@
+Impact Sounds (1.0) — Kenney (https://kenney.nl)
+Creative Commons Zero 1.0, https://creativecommons.org/publicdomain/zero/1.0/
+Source: https://github.com/OmniTender-Systems/game-audio-assets/tree/HEAD/vendor/kenney/impact-sounds
+
+RPG Audio — Kenney (https://kenney.nl)
+Creative Commons Zero 1.0, https://creativecommons.org/publicdomain/zero/1.0/
+Source: https://github.com/OmniTender-Systems/game-audio-assets/tree/HEAD/vendor/kenney/rpg-audio

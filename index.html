@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <title>Пять стилей 2D-анимации — NURMADOG</title>
+  <title>Современный комикс — NURMADOG</title>
   <style>
     :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #111926; color: #f3f5f6; }
     * { box-sizing: border-box; }
@@ -23,6 +23,15 @@
     .intro p { color: #aebdc6; line-height: 1.6; margin: 0; max-width: 650px; font-size: 16px; }
     .stat { flex-shrink: 0; text-align: right; color: #aebdc6; font-size: 12px; letter-spacing: .06em; line-height: 1.8; }
     .stat strong { display: block; font-size: 22px; color: #f2f7f4; letter-spacing: -.02em; }
+    .featured { display: grid; grid-template-columns: minmax(200px, 310px) 1fr; gap: clamp(25px, 5vw, 60px); align-items: center; padding: clamp(22px, 4vw, 48px); border-radius: 22px; border: 1px solid #87ddd735; background: linear-gradient(125deg, #213a46, #1a2635); box-shadow: 0 24px 55px #0003; }
+    .shorts-player { overflow: hidden; width: 100%; aspect-ratio: 9 / 16; border-radius: 15px; background: #0c121b; box-shadow: 0 18px 36px #0005; }
+    .shorts-player video { aspect-ratio: 9 / 16; }
+    .feature-copy .tag { color: #a8e8df; font-size: 11px; letter-spacing: .14em; font-weight: 800; text-transform: uppercase; }
+    .feature-copy h2 { font-size: clamp(28px, 4vw, 44px); line-height: 1.1; letter-spacing: -.045em; margin: 14px 0; }
+    .feature-copy p { color: #c2d0d3; line-height: 1.7; max-width: 510px; }
+    .feature-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 26px; }
+    .feature-meta span { padding: 8px 11px; background: #ffffff0e; border: 1px solid #ffffff18; border-radius: 20px; color: #d8e8e7; font-size: 12px; font-weight: 700; }
+    .section-title { font-size: 24px; letter-spacing: -.03em; margin: 58px 0 20px; }
     .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
     .card { overflow: hidden; border: 1px solid #ffffff18; border-radius: 18px; background: #1c2734; box-shadow: 0 18px 40px #0002; }
     .player { position: relative; background: #0c121b; aspect-ratio: 16 / 9; }
@@ -45,6 +54,10 @@
       .intro { display: block; padding: 44px 0 30px; }
       .stat { text-align: left; margin-top: 20px; }
       .stat strong { display: inline; font-size: 13px; }
+      .featured { grid-template-columns: 1fr; gap: 25px; }
+      .shorts-player { max-width: 320px; margin: 0 auto; }
+      .feature-copy { text-align: center; }
+      .feature-meta { justify-content: center; }
       .grid { grid-template-columns: 1fr; gap: 16px; }
       .choose { align-items: flex-start; flex-direction: column; padding: 23px; }
     }
@@ -60,17 +73,28 @@
   <div class="shell">
     <header>
       <div class="brand"><span class="brand-mark">N</span><span>NURMADOG / 2D</span></div>
-      <a class="header-link" href="videos/five_styles.zip" download>Скачать всё ↓</a>
+      <a class="header-link" href="videos/06_modern_comic_shorts.mp4" download>Скачать Shorts ↓</a>
     </header>
     <main>
       <section class="intro">
         <div>
-          <div class="eyebrow">Пробные анимации · одна история</div>
-          <h1>Один сюжет.<br><em>Пять стилей.</em></h1>
-          <p>Герою звонит полиция, к дому приезжает машина и полицейские задерживают его. Посмотри каждый вариант и выбери, в каком стиле продолжить историю.</p>
+          <div class="eyebrow">Новая версия · вертикальный формат</div>
+          <h1>Комикс.<br><em>Теперь для Shorts.</em></h1>
+          <p>Та же история, но в новом оформлении: звонок полиции, приезд к дому и задержание героя. Ниже можно сравнить новую версию с первыми пробами.</p>
         </div>
-        <div class="stat"><strong>5 роликов</strong> по 10 секунд<br>со звуком · без озвучки</div>
+        <div class="stat"><strong>9:16 · 10 секунд</strong> 1080 × 1920<br>со звуком · без озвучки</div>
       </section>
+      <section class="featured" aria-label="Новый вертикальный ролик">
+        <div class="shorts-player"><video controls playsinline preload="metadata" aria-label="Современный комикс для Shorts"><source src="videos/06_modern_comic_shorts.mp4" type="video/mp4"></video></div>
+        <div class="feature-copy">
+          <span class="tag">Новая проба · 06</span>
+          <h2>Современный комикс</h2>
+          <p>Крупный план и реакция героя, движение телефона, подъезжающая машина, открывающаяся дверь и задержание. Рисованная 2D-анимация без фотографий.</p>
+          <div class="feature-meta"><span>Shorts 9:16</span><span>10 секунд</span><span>30 кадров/с</span><span>Музыка и эффекты</span></div>
+          <a class="all" href="videos/06_modern_comic_shorts.mp4" download>Скачать новый ролик ↓</a>
+        </div>
+      </section>
+      <h2 class="section-title">Первые пять проб</h2>
       <section class="grid" aria-label="Пять вариантов мультфильма">
         <article class="card" style="--accent:#ffcf69">
           <div class="player"><video controls playsinline preload="metadata" aria-label="Солнечный мульт"><source src="videos/01_sunny_cartoon.mp4" type="video/mp4"></video></div>
@@ -94,11 +118,11 @@
         </article>
       </section>
       <section class="choose">
-        <div><h2>Какой стиль выбираешь?</h2><p>Напиши в чате номер или название. Ролики сделаны как простая рисованная 2D-анимация, без фотографий; внутри есть музыка и эффекты, но нет речи.</p></div>
-        <a class="all" href="videos/five_styles.zip" download>Все 5 роликов ↓</a>
+        <div><h2>Продолжаем с новым стилем?</h2><p>Напиши в чате, что понравилось и что стоит улучшить. Все версии — стилизованная рисованная 2D-анимация; музыка и эффекты есть, речи нет.</p></div>
+        <a class="all" href="videos/five_styles.zip" download>Архив первых 5 ↓</a>
       </section>
     </main>
-    <footer>Все ролики: MP4 · 1280 × 720 · 25 кадров/с · 10 секунд</footer>
+    <footer>Новый ролик: MP4 · 1080 × 1920 · 30 кадров/с · 10 секунд. Первые пробы: 1280 × 720 · 25 кадров/с.</footer>
   </div>
   <script>
     // Let the viewer compare styles without soundtracks playing over one another.
