@@ -1,0 +1,12 @@
+Sound effects in this folder: Kenney (https://kenney.nl), RPG Audio and Impact Sounds packs.
+License: Creative Commons Zero 1.0 (CC0), https://creativecommons.org/publicdomain/zero/1.0/.
+Source mirror: https://github.com/OmniTender-Systems/game-audio-assets/tree/HEAD/vendor/kenney
+Additional sounds from ../../../animation/sounds/ have the same license; see that folder's ATTRIBUTION.txt.
+
+Night insects and distant city ambience:
+“Oculus Audio Pack 01” by Oculus VR, LLC
+https://developers.meta.com/vr/downloads/package/oculus-audio-pack-1/
+Licensed under Creative Commons Attribution 4.0 International (CC BY 4.0):
+https://creativecommons.org/licenses/by/4.0/
+Source: https://github.com/facebookincubator/Meta-open-sound/tree/main/corpora/oculus-audio-pack
+Files renamed to the UCS naming convention and OGG previews transcoded from the original WAVs by the source repository. The excerpts are trimmed, mixed, level-adjusted and faded for this video.

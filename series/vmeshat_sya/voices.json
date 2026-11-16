@@ -1,0 +1,10 @@
+{
+  "series": "Вмешаться",
+  "episode": 1,
+  "voices": {
+    "hero_narrator": {"voice_id": "voice-00", "gender": "masculine", "language": "ru", "example": "voices/hero_01_night.wav"},
+    "tattooed_neighbor": {"voice_id": "voice-01", "gender": "masculine", "language": "ru", "example": "voices/man_02_door.wav"},
+    "woman": {"voice_id": "voice-02", "gender": "feminine", "language": "ru", "example": "voices/woman_01_help.wav"}
+  },
+  "continuity": "Reuse these registered voice IDs in this conversation. Voice IDs are session registrations; in a new session the same voices may require a new audition. Saved example clips document the choices."
+}
