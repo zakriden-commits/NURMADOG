@@ -1,0 +1,23 @@
+{
+  "name": "PS5BootExperience",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "PS5BootShared": {
+        "$path": "src/shared"
+      }
+    },
+    "ServerScriptService": {
+      "PS5BootExperience": {
+        "$path": "src/server"
+      }
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "PS5BootExperience": {
+          "$path": "src/client"
+        }
+      }
+    }
+  }
+}

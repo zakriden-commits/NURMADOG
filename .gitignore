@@ -1,0 +1,12 @@
+# Local Roblox Studio place/model files and Rojo artifacts
+*.rbxl
+*.rbxlx
+*.rbxm
+*.rbxmx
+!plugin/*.rbxm
+!plugin/*.rbxmx
+sourcemap.json
+
+# Local tooling
+node_modules/
+.DS_Store
