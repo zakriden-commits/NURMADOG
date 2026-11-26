@@ -1,6 +1,6 @@
 -- HelperSasny Client v1.0
 -- Клиентская часть: магазин-меню HelperSasny в игре
--- Устанавливается автоматически плагином HelperSasny
+-- Вставлять в StarterPlayerScripts как LocalScript "HelperSasnyClient"
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")

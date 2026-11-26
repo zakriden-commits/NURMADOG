@@ -1,8 +1,10 @@
-# 🟪 HelperSasny — плагин-магазин веселья для Roblox Studio
+# 🟪 HelperSasny — магазин веселья для Roblox Studio
 
 ![HelperSasny Logo](logo.png)
 
-**HelperSasny** — это плагин для Roblox Studio, который **сам ставит в твою игру** сервер, клиент и магазин-меню. В игре появляется приятный магазин как в Roblox — с логотипом, кнопками и анимациями. Нажал кнопку — функция сразу работает на карте.
+**HelperSasny** — это набор скриптов для Roblox Studio, которые превращают игру в магазин веселья: в игре появляется приятное меню как в Roblox-магазине — с логотипом, кнопками и анимациями. Нажал кнопку — функция сразу работает на карте.
+
+Просто вставляешь два скрипта и один RemoteEvent, как описано ниже.
 
 ---
 
@@ -18,7 +20,7 @@
 | 👑 **Жирный ник** | Ник над головой жирным шрифтом `GothamBlack`, с обводкой и градиентом, пульсирует |
 | 🤕 **Ragdoll на R** | Нажал **R** — персонаж падает как тряпичная кукла (BallSocketConstraint), через 3.5 сек встаёт. Повторный R — встать сразу |
 
-### Мои бонусы (ещё 4)
+### Бонусы
 | Функция | Что делает |
 |---|---|
 | ⚡ **Скорость x2** | `WalkSpeed = 32` на 10 секунд |
@@ -30,97 +32,94 @@
 
 ---
 
-## 🚀 Установка (2 минуты)
+## 🛠 Установка (2 минуты)
 
-### Способ 1 — через плагин (рекомендуется, всё само)
+Нужно создать **3 объекта** в Studio. Для каждого скрипта: кликни правой кнопкой → в меню выбора типа (Script / LocalScript) → **Explorer** → выбери нужную папку → вставь код из файла.
 
-1. Открой **Roblox Studio** → открой свою игру (place).
-2. Вверху нажми вкладку **Plugins** → **Manage Plugins** → **Create New Plugin**.
-3. Откроется окно плагина. Удали весь код по умолчанию.
-4. Открой файл **`plugin.lua`** из этой папки, скопируй **весь** текст и вставь в окно плагина.
-5. Нажми **Save** (или просто закрой окно — плагин сохранится).
-6. На панели **Plugins** появится кнопка **HelperSasny** с фиолетовым кубиком. Нажми её — справа откроется панель HelperSasny.
-7. Нажми большую кнопку **«🚀 Установить в игру»**.
-   - Плагин сам создаст:
-     - `ReplicatedStorage/HelperSasnyRemotes/UseFunction` (RemoteEvent)
-     - `ServerScriptService/HelperSasnyServer` (Script)
-     - `StarterPlayer/StarterPlayerScripts/HelperSasnyClient` (LocalScript)
-8. Нажми **Play** (▶) — в игре справа внизу появится круглая кнопка **HS**. Нажми её — откроется магазин!
+### 📌 Шаг 1. RemoteEvent (обязательно, без него не заработает)
 
-> 💡 Если кнопки HelperSasny нет на панели: Plugins → Manage Plugins → найди HelperSasny → включи.
+1. Открой **Explorer** (обычно слева).
+2. В `ReplicatedStorage` → правый клик → **Insert Object** → **Folder**.
+   - Назови: `HelperSasnyRemotes`
+3. Открой `HelperSasnyRemotes` → правый клик → **Insert Object** → **RemoteEvent**.
+   - Назови: `UseFunction`
 
-### Способ 2 — вручную (без плагина)
+> 💡 Если папка `ReplicatedStorage` не видна — внутри `ReplicatedStorage` выбери игру (place), она должна быть сверху в Explorer.
 
-Если плагин не ставится, можно вручную:
-1. В **ServerScriptService** создай **Script**, назови `HelperSasnyServer`, вставь код из `src/Server.lua`.
-2. В **StarterPlayer → StarterPlayerScripts** создай **LocalScript**, назови `HelperSasnyClient`, вставь код из `src/Client.lua`.
-3. В **ReplicatedStorage** создай **Folder** `HelperSasnyRemotes`, внутри — **RemoteEvent** `UseFunction`.
-4. Нажми Play.
+### 📌 Шаг 2. Серверный скрипт
 
----
+1. В **Explorer** → `ServerScriptService` → правый клик → **Insert Object** → **Script**.
+2. Назови скрипт: `HelperSasnyServer`
+3. Дважды кликни по скрипту → в editor вставь **весь код из файла `src/Server.lua`**.
+4. Сохрани (Ctrl+S).
 
-## 🎮 Как играть
+### 📌 Шаг 3. Клиентский скрипт
 
-- **Кнопка HS** (справа внизу) — открыть / свернуть магазин.
-- **Кнопки в магазине** — каждая активирует функцию на твоём персонаже.
-- **Клавиша R** — мгновенный Ragdoll (можно и без магазина).
-- **Крестик ✕** в шапке — закрыть магазин.
+1. В **Explorer** → `StarterPlayer` → раскрой `StarterPlayerScripts`.
+   - Если `StarterPlayerScripts` нет: в `StarterPlayer` → правый клик → **Insert Object** → **StarterPlayerScripts**.
+2. Внутри `StarterPlayerScripts` → правый клик → **Insert Object** → **LocalScript**.
+3. Назови скрипт: `HelperSasnyClient`
+4. Дважды кликни по скрипту → в editor вставь **весь код из файла `src/Client.lua`**.
+5. Сохрани (Ctrl+S).
+
+### 🎮 Игра
+
+1. Нажми **Play** (▶).
+2. В игре справа внизу появится круглая кнопка **HS**.
+3. Нажми её — откроется магазин.
+4. **Кнопки магазина** — каждая активирует функцию на твоём персонаже.
+5. **Клавиша R** — мгновенный Ragdoll (можно и без магазина).
+6. **Крестик ✕** в шапке — закрыть магазин.
 
 Магазин в фиолетово-мятных цветах логотипа, с анимацией открытия, hover-эффектами и тостами «Активировано!».
 
 ---
 
-## 🖼 Логотип
+## 🗂 Структура файлов
 
-Логотип лежит в файле **`logo.png`** — милый фиолетовый кубик с ручками (как на картинке выше).
+```
+HelperSasny/
+├── logo.png          ← логотип (фиолетовый кубик)
+├── README.md         ← эта инструкция
+└── src/
+    ├── Server.lua    ← сервер: вставить в ServerScriptService как Script "HelperSasnyServer"
+    └── Client.lua    ← клиент: вставить в StarterPlayerScripts как LocalScript "HelperSasnyClient"
+```
 
-### Как поставить свой ID логотипа на кнопку плагина (необязательно)
-1. Зайди на [Creator Dashboard](https://create.roblox.com/dashboard/creations) → **Creations** → **Images** → **Upload** → выбери `logo.png`.
-2. Скопируй ID (числа из ссылки).
-3. Открой `plugin.lua`, найди строку:
-   ```lua
-   local ICON_ID = "rbxassetid://0"
-   ```
-   Замени `0` на свой ID, например:
-   ```lua
-   local ICON_ID = "rbxassetid://1234567890"
-   ```
-4. Сохрани плагин заново. Кнопка HelperSasny будет с твоим логотипом.
+**Что вставить куда — краткая таблица:**
 
-Без этого плагин всё равно работает — просто иконка будет стандартная.
+| Файл | Кладём в | Тип | Имя |
+|---|---|---|---|
+| `src/Server.lua` | `ServerScriptService` | **Script** | `HelperSasnyServer` |
+| `src/Client.lua` | `StarterPlayer` → `StarterPlayerScripts` | **LocalScript** | `HelperSasnyClient` |
+| (разовый объект) | `ReplicatedStorage` → Folder → **RemoteEvent** | RemoteEvent | `UseFunction` (внутри папки `HelperSasnyRemotes`) |
+
+---
+
+## 🎨 Логотип
+
+Логотип лежит в файле **`logo.png`** — милый фиолетовый кубик с минт-акцентами.
+
+Логотип используется в магазине-меню: кнопка **HS** и задний фон магазина раскрашены в цвета логотипа.
 
 ---
 
 ## 🗑 Удаление
 
-В панели HelperSasny нажми **«🗑 Удалить из игры»** — плагин сам удалит сервер, клиент и RemoteEvent. Или удали вручную три объекта из раздела «Способ 2».
-
----
-
-## 📁 Структура
-
-```
-HelperSasny/
-├── logo.png          ← логотип (фиолетовый кубик)
-├── plugin.lua        ← главный файл плагина (вставить в Studio)
-├── README.md         ← эта инструкция
-└── src/
-    ├── Server.lua    ← сервер (логика всех 10 функций)
-    └── Client.lua    ← клиент (магазин-GUI в игре)
-```
-
-`plugin.lua` — самодостаточный: сервер и клиент уже встроены в него, поэтому достаточно вставить только его.
+Просто удалишь три объекта:
+1. `ServerScriptService/HelperSasnyServer`
+2. `StarterPlayer/StarterPlayerScripts/HelperSasnyClient`
+3. `ReplicatedStorage/HelperSasnyRemotes` (вся папка)
 
 ---
 
 ## 🛠 Технические детали
 
-- **Luau**, актуальный Plugin API: `CreateToolbar`, `CreateButton`, `CreateDockWidgetPluginGui`.
-- **ChangeHistoryService** — установка/удаление через Undo (Ctrl+Z).
-- Погонщики: `Anchored` + `CFrame.lookAt` каждый `Heartbeat`, с `Trail`, `PointLight`, `ParticleEmitter`.
-- Ragdoll: `Humanoid:ChangeState(Physics)` + `BallSocketConstraint` на каждый `Motor6D`, автовосстановление.
+- **Luau**: сервер — `Script`, клиент — `LocalScript`.
+- Погонщики: `Anchored` + `CFrame.lookAt` каждый `Heartbeat`, с `Trail`, `PointLight`, `ParticleEmitter`, глазами.
+- Ragdoll: `Humanoid:ChangeState(Physics)` + `BallSocketConstraint` на каждый `Motor6D`, автовосстановление через 3.5 сек.
 - Ник: `BillboardGui` + `GothamBlack` + `UIStroke` + `UIGradient`.
-- Магазин: `ScreenGui` + `UIGridLayout` + `TweenService` анимации, `ResetOnSpawn = false`.
+- Магазин: `ScreenGui` + `UIGridLayout` + `TweenService`, `ResetOnSpawn = false`.
 
 ---
 

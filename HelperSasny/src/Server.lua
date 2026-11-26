@@ -1,6 +1,6 @@
 -- HelperSasny Server v1.0
 -- Серверная часть: обрабатывает все функции магазина HelperSasny
--- Устанавливается автоматически плагином HelperSasny
+-- Вставлять в ServerScriptService как Script "HelperSasnyServer"
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")

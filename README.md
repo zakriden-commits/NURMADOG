@@ -1,14 +1,15 @@
 # NURMADOG
 
-## 🟪 HelperSasny — плагин-магазин для Roblox Studio
+## 🟪 HelperSasny — магазин веселья для Roblox Studio
 
-Готовый плагин **HelperSasny** с логотипом: сам ставит в игру магазин веселья (кубик-погонщик, круг, треугольник, высокий прыжок, жирный ник, ragdoll на R + 4 бонуса).
+Готовый набор скриптов **HelperSasny** с логотипом: кубик-погонщик, круг, треугольник, высокий прыжок, жирный ник, ragdoll на R + 4 бонуса. Просто два скрипта и RemoteEvent — куда что вставить, в инструкции.
 
 👉 **Инструкция:** [HelperSasny/README.md](HelperSasny/README.md)
 
 **Быстрый старт:**
-1. Открой `HelperSasny/plugin.lua`, скопируй весь код.
-2. В Roblox Studio: Plugins → Manage Plugins → Create New Plugin → вставь код → Save.
-3. Нажми кнопку HelperSasny → «Установить в игру» → Play → кнопка HS в игре.
+1. `ReplicatedStorage` → Folder `HelperSasnyRemotes` → RemoteEvent `UseFunction`.
+2. `ServerScriptService` → Script `HelperSasnyServer` ← код из `HelperSasny/src/Server.lua`.
+3. `StarterPlayerScripts` → LocalScript `HelperSasnyClient` ← код из `HelperSasny/src/Client.lua`.
+4. Play → кнопка HS в игре → магазин.
 
 ![HelperSasny Logo](HelperSasny/logo.png)
