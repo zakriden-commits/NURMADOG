@@ -665,7 +665,6 @@ local function startStickmanMode()
 		originalJumpPower = humanoid.JumpPower
 		humanoid.WalkSpeed = 0
 		humanoid.JumpPower = 0
-		humanoid:ChangeState(Enum.HumanoidStateType.Standing)
 	end
 
 	-- Скрываем оригинальное тело персонажа
