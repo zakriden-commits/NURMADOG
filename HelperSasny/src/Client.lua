@@ -6,6 +6,8 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
+local workspace = game:GetService("Workspace")
+local RunService = game:GetService("RunService")
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
@@ -383,6 +385,374 @@ end)
 -- Приветствие
 task.delay(1, function()
 	showToast("🟪 HelperSasny загружен! Нажми HS")
+end)
+
+-- ============================================================
+-- СТИКС-ПЕРСОНАЖ: худой стикман, вид «как 2D-картинка» в полный рост,
+-- движение заблокировано, кнопка «Жирнее» — анимированное увеличение жирности.
+-- ============================================================
+local stickmanMode = false
+local fatLevel = 0
+local MAX_FAT = 10
+local stickmanModel = nil
+local stickmanParts = {}
+local stickmanGui = nil
+local originalWalkSpeed = 16
+local originalJumpPower = 50
+local cameraTweenThread = nil
+
+-- Утилиты для создания части
+local function createStickPart(name, shape, size, color, material)
+	local part = Instance.new("Part")
+	part.Name = name
+	part.Shape = shape
+	part.Size = size
+	part.Color = color
+	part.Material = material or Enum.Material.SmoothPlastic
+	part.CanCollide = false
+	part.CanQuery = false
+	part.Anchored = false
+	return part
+end
+
+-- Создание худого стикмана
+local function buildStickman(rootPos)
+	local model = Instance.new("Model")
+	model.Name = "HelperSasnyStickman"
+	model.PrimaryPart = nil
+
+	local torso = createStickPart("Torso", Enum.PartType.Block, Vector3.new(1.0, 1.6, 0.6), COLORS.Accent)
+	torso.CFrame = CFrame.new(rootPos + Vector3.new(0, 1.6, 0))
+	torso.Parent = model
+
+	local head = createStickPart("Head", Enum.PartType.Block, Vector3.new(0.8, 0.8, 0.8), COLORS.AccentMint)
+	head.CFrame = torso.CFrame * CFrame.new(0, 1.6, 0)
+	head.Parent = model
+
+	-- Глаза (две точки на лице)
+	for _, side in ipairs({-1, 1}) do
+		local eye = createStickPart("Eye", Enum.PartType.Ball, Vector3.new(0.14, 0.14, 0.14), Color3.fromRGB(20, 20, 20), Enum.Material.Neon)
+		eye.CFrame = head.CFrame * CFrame.new(side * 0.22, 0.1, 0.4)
+		eye.Parent = model
+	end
+
+	local armSize = Vector3.new(0.3, 1.3, 0.3)
+	for _, side in ipairs({-1, 1}) do
+		local arm = createStickPart("Arm", Enum.PartType.Cylinder, armSize, COLORS.Accent)
+		arm.CFrame = torso.CFrame * CFrame.new(side * 0.85, 0.2, 0)
+		arm.Parent = model
+	end
+
+	local legSize = Vector3.new(0.36, 1.5, 0.36)
+	for _, side in ipairs({-1, 1}) do
+		local leg = createStickPart("Leg", Enum.PartType.Cylinder, legSize, COLORS.Accent)
+		leg.CFrame = torso.CFrame * CFrame.new(side * 0.3, -1.55, 0)
+		leg.Parent = model
+	end
+
+	model.Parent = workspace
+	stickmanModel = model
+	stickmanParts = {
+		torso = torso,
+		head = head,
+		arms = {},
+		legs = {},
+	}
+	-- Собираем ссылки на руки и ноги
+	for _, child in ipairs(model:GetChildren()) do
+		if child.Name == "Arm" then
+			table.insert(stickmanParts.arms, child)
+		elseif child.Name == "Leg" then
+			table.insert(stickmanParts.legs, child)
+		end
+	end
+
+	return model
+end
+
+-- Применение жирности: анимированное изменение размеров
+local function applyFat(level)
+	if not stickmanModel then return end
+	local torso = stickmanParts.torso
+	local head = stickmanParts.head
+	if not torso or not head then return end
+
+	local fat = level / MAX_FAT -- 0..1
+
+	-- Цели: торс шире и глубже, голова чуть больше, руки/ноги толще
+	local torsoSize = Vector3.new(1.0 + 0.5 * fat, 1.6 - 0.15 * fat, 0.6 + 0.7 * fat)
+	local headSize = Vector3.new(0.8 + 0.35 * fat, 0.8 + 0.35 * fat, 0.8 + 0.35 * fat)
+	local armSize = Vector3.new(0.3 + 0.35 * fat, 1.3, 0.3 + 0.35 * fat)
+	local legSize = Vector3.new(0.36 + 0.45 * fat, 1.5, 0.36 + 0.45 * fat)
+
+	local tweenInfo = TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out, 1, true)
+
+	TweenService:Create(torso, tweenInfo, { Size = torsoSize }):Play()
+	TweenService:Create(head, tweenInfo, { Size = headSize }):Play()
+
+	-- Руки и ноги: размер + перемещение, чтобы держаться за растущий торс
+	local armOffsetX = 0.5 + 0.25 * fat + armSize.X / 2
+	local legOffsetX = 0.15 + 0.12 * fat
+	for _, arm in ipairs(stickmanParts.arms) do
+		local side = arm.CFrame.X - torso.Position.X < 0 and -1 or 1
+		local targetCF = torso.CFrame * CFrame.new(side * armOffsetX, 0.2, 0)
+		local t = TweenService:Create(arm, tweenInfo, { Size = armSize, CFrame = targetCF })
+		t:Play()
+	end
+	for _, leg in ipairs(stickmanParts.legs) do
+		local side = leg.CFrame.X - torso.Position.X < 0 and -1 or 1
+		local targetCF = torso.CFrame * CFrame.new(side * legOffsetX, -1.55, 0)
+		local t = TweenService:Create(leg, tweenInfo, { Size = legSize, CFrame = targetCF })
+		t:Play()
+	end
+
+	-- Обновляем счётчик
+	if fatLabel then
+		fatLabel.Text = "Уровень жирности: " .. level .. "/" .. MAX_FAT
+	end
+end
+
+-- UI-панель стикмана
+local fatLabel = nil
+local fatButton = nil
+local slimButton = nil
+local exitButton = nil
+
+local function createStickmanGui()
+	if stickmanGui then return end
+	stickmanGui = Instance.new("ScreenGui")
+	stickmanGui.Name = "HelperSasnyStickman"
+	stickmanGui.ResetOnSpawn = false
+	stickmanGui.IgnoreGuiInset = true
+	stickmanGui.DisplayOrder = 15
+	stickmanGui.Parent = playerGui
+
+	local panel = Instance.new("Frame")
+	panel.Name = "Panel"
+	panel.Size = UDim2.new(0, 240, 0, 190)
+	panel.Position = UDim2.new(0, 20, 1, -210)
+	panel.BackgroundColor3 = COLORS.Background
+	panel.BorderSizePixel = 0
+	panel.Parent = stickmanGui
+
+	local panelCorner = Instance.new("UICorner")
+	panelCorner.CornerRadius = UDim.new(0, 18)
+	panelCorner.Parent = panel
+
+	local panelStroke = Instance.new("UIStroke")
+	panelStroke.Thickness = 2
+	panelStroke.Color = COLORS.AccentMint
+	panelStroke.Parent = panel
+
+	local panelGradient = Instance.new("UIGradient")
+	panelGradient.Color = ColorSequence.new(COLORS.Background, COLORS.BackgroundLight)
+	panelGradient.Rotation = 90
+	panelGradient.Parent = panel
+
+	local title = Instance.new("TextLabel")
+	title.Size = UDim2.new(1, 0, 0, 30)
+	title.Position = UDim2.new(0, 12, 0, 12)
+	title.BackgroundTransparency = 1
+	title.Text = "🖥 Стикс-экран"
+	title.Font = Enum.Font.GothamBlack
+	title.TextSize = 16
+	title.TextColor3 = COLORS.AccentMint
+	title.Parent = panel
+
+	fatLabel = Instance.new("TextLabel")
+	fatLabel.Size = UDim2.new(1, 0, 0, 26)
+	fatLabel.Position = UDim2.new(0, 12, 0, 46)
+	fatLabel.BackgroundTransparency = 1
+	fatLabel.Text = "Уровень жирности: 0/" .. MAX_FAT
+	fatLabel.Font = Enum.Font.GothamBold
+	fatLabel.TextSize = 13
+	fatLabel.TextColor3 = COLORS.Text
+	fatLabel.Parent = panel
+
+	fatButton = Instance.new("TextButton")
+	fatButton.Size = UDim2.new(1, -20, 0, 48)
+	fatButton.Position = UDim2.new(0, 10, 0, 80)
+	fatButton.BackgroundColor3 = COLORS.Accent
+	fatButton.Text = "🍔 Жирнее"
+	fatButton.Font = Enum.Font.GothamBlack
+	fatButton.TextSize = 16
+	fatButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+	fatButton.AutoButtonColor = false
+	fatButton.Parent = panel
+
+	local fatCorner = Instance.new("UICorner")
+	fatCorner.CornerRadius = UDim.new(0, 12)
+	fatCorner.Parent = fatButton
+
+	local fatStroke = Instance.new("UIStroke")
+	fatStroke.Thickness = 2
+	fatStroke.Color = COLORS.AccentMint
+	fatStroke.Parent = fatButton
+
+	slimButton = Instance.new("TextButton")
+	slimButton.Size = UDim2.new(1, -20, 0, 42)
+	slimButton.Position = UDim2.new(0, 10, 0, 138)
+	slimButton.BackgroundColor3 = COLORS.BackgroundLight
+	slimButton.Text = "🥗 Похудеть"
+	slimButton.Font = Enum.Font.GothamBold
+	slimButton.TextSize = 14
+	slimButton.TextColor3 = COLORS.Text
+	slimButton.AutoButtonColor = false
+	slimButton.Parent = panel
+
+	local slimCorner = Instance.new("UICorner")
+	slimCorner.CornerRadius = UDim.new(0, 10)
+	slimCorner.Parent = slimButton
+
+	exitButton = Instance.new("TextButton")
+	exitButton.Size = UDim2.new(0, 90, 0, 34)
+	exitButton.Position = UDim2.new(1, -100, 0, 8)
+	exitButton.BackgroundColor3 = Color3.fromRGB(80, 55, 90)
+	exitButton.Text = "✕ Выйти"
+	exitButton.Font = Enum.Font.GothamBold
+	exitButton.TextSize = 12
+	exitButton.TextColor3 = COLORS.Text
+	exitButton.AutoButtonColor = false
+	exitButton.Parent = panel
+
+	local exitCorner = Instance.new("UICorner")
+	exitCorner.CornerRadius = UDim.new(0, 10)
+	exitCorner.Parent = exitButton
+
+	fatButton.MouseButton1Click:Connect(function()
+		if fatLevel < MAX_FAT then
+			fatLevel = fatLevel + 1
+			applyFat(fatLevel)
+			showToast("🍔 Жирнее! Уровень: " .. fatLevel)
+		end
+	end)
+
+	slimButton.MouseButton1Click:Connect(function()
+		if fatLevel > 0 then
+			fatLevel = fatLevel - 1
+			applyFat(fatLevel)
+			showToast("🥗 Похудел! Уровень: " .. fatLevel)
+		end
+	end)
+
+	exitButton.MouseButton1Click:Connect(stopStickmanMode)
+end
+
+-- Запуск режима стикмана
+local function startStickmanMode()
+	if stickmanMode then return end
+	local character = player.Character
+	if not character then return end
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
+	local root = character:FindFirstChild("HumanoidRootPart")
+	if not root then return end
+
+	-- Сохраняем и блокируем движение
+	if humanoid then
+		originalWalkSpeed = humanoid.WalkSpeed
+		originalJumpPower = humanoid.JumpPower
+		humanoid.WalkSpeed = 0
+		humanoid.JumpPower = 0
+		humanoid:ChangeState(Enum.HumanoidStateType.Standing)
+	end
+
+	-- Скрываем оригинальное тело персонажа
+	for _, part in ipairs(character:GetChildren()) do
+		if part:IsA("Part") or part:IsA("MeshPart") then
+			part.Transparency = 1
+			part.CanCollide = false
+		end
+	end
+
+	-- Создаём стикмана на месте персонажа
+	buildStickman(root.Position)
+
+	-- UI
+	createStickmanGui()
+
+	-- Локатор камеры
+	local cam = workspace.CurrentCamera
+	cam.CameraMode = Enum.CameraMode.Scriptable
+
+	stickmanMode = true
+	applyFat(fatLevel)
+
+	-- Цикл фиксации камеры: вид на стикмана в полный рост, как 2D-картинка
+	if cameraTweenThread then task.cancel(cameraTweenThread) end
+	cameraTweenThread = task.spawn(function()
+		while stickmanMode and stickmanModel do
+			local torso = stickmanParts.torso
+			if torso and torso.Parent then
+				local camPos = torso.Position + Vector3.new(0, 1.2, 11)
+				local lookAt = torso.Position + Vector3.new(0, 1.6, 0)
+				cam.CFrame = CFrame.lookAt(camPos, lookAt)
+				cam.FieldOfView = 60
+			end
+			RunService.Heartbeat:Wait()
+		end
+	end)
+end
+
+-- Выход из режима
+local function stopStickmanMode()
+	if not stickmanMode then return end
+	stickmanMode = false
+
+	if cameraTweenThread then
+		task.cancel(cameraTweenThread)
+		cameraTweenThread = nil
+	end
+
+	-- Восстанавливаем камеру
+	local cam = workspace.CurrentCamera
+	cam.CameraMode = Enum.CameraMode.Default
+	cam.FieldOfView = 70
+
+	-- Удаляем стикмана
+	if stickmanModel then
+		stickmanModel:Destroy()
+		stickmanModel = nil
+	end
+	stickmanParts = {}
+
+	-- Восстанавливаем персонажа
+	local character = player.Character
+	if character then
+		local humanoid = character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			humanoid.WalkSpeed = originalWalkSpeed
+			humanoid.JumpPower = originalJumpPower
+		end
+		for _, part in ipairs(character:GetChildren()) do
+			if part:IsA("Part") or part:IsA("MeshPart") then
+				part.Transparency = 0
+				part.CanCollide = true
+			end
+		end
+	end
+
+	-- Удаляем UI
+	if stickmanGui then
+		stickmanGui:Destroy()
+		stickmanGui = nil
+	end
+	fatLabel = nil
+	fatButton = nil
+	slimButton = nil
+	exitButton = nil
+end
+
+-- Запуск при загрузке персонажа
+player.CharacterAdded:Connect(function(character)
+	task.spawn(function()
+		-- Небольшая пауза, чтобы модель полностью сложилась
+		task.wait(0.5)
+		startStickmanMode()
+	end)
+end)
+
+player.CharacterRemoving:Connect(function()
+	stopStickmanMode()
 end)
 
 print("[HelperSasny] Клиент загружен! Магазин готов")
