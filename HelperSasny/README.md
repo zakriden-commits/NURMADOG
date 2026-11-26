@@ -46,26 +46,20 @@
 
 ## 🛠 Установка (2 минуты)
 
-Нужно создать **3 объекта** в Studio. Для каждого скрипта: кликни правой кнопкой → в меню выбора типа (Script / LocalScript) → **Explorer** → выбери нужную папку → вставь код из файла.
+Нужно создать **2 скрипта** в Studio. Папка `HelperSasnyRemotes` и RemoteEvent `UseFunction` создаются **самим сервером автоматически** при старте — ручным созданием заниматься не нужно.
 
-### 📌 Шаг 1. RemoteEvent (обязательно, без него не заработает)
+Для каждого скрипта: кликни правой кнопкой → в меню выбора типа (Script / LocalScript) → **Explorer** → выбери нужную папку → вставь код из файла.
 
-1. Открой **Explorer** (обычно слева).
-2. В `ReplicatedStorage` → правый клик → **Insert Object** → **Folder**.
-   - Назови: `HelperSasnyRemotes`
-3. Открой `HelperSasnyRemotes` → правый клик → **Insert Object** → **RemoteEvent**.
-   - Назови: `UseFunction`
+> 💡 Серверный скрипт должен запуститься **до** клиентского — он сам создаст папку `ReplicatedStorage/HelperSasnyRemotes` и RemoteEvent `UseFunction`. Клиентscript просто дождётся их появления.
 
-> 💡 Если папка `ReplicatedStorage` не видна — внутри `ReplicatedStorage` выбери игру (place), она должна быть сверху в Explorer.
-
-### 📌 Шаг 2. Серверный скрипт
+### 📌 Шаг 1. Серверный скрипт
 
 1. В **Explorer** → `ServerScriptService` → правый клик → **Insert Object** → **Script**.
 2. Назови скрипт: `HelperSasnyServer`
 3. Дважды кликни по скрипту → в editor вставь **весь код из файла `src/Server.lua`**.
 4. Сохрани (Ctrl+S).
 
-### 📌 Шаг 3. Клиентский скрипт
+### 📌 Шаг 2. Клиентский скрипт
 
 1. В **Explorer** → `StarterPlayer` → раскрой `StarterPlayerScripts`.
    - Если `StarterPlayerScripts` нет: в `StarterPlayer` → правый клик → **Insert Object** → **StarterPlayerScripts**.

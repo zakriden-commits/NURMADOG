@@ -7,8 +7,20 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 
-local remotesFolder = ReplicatedStorage:WaitForChild("HelperSasnyRemotes")
-local useFunctionEvent = remotesFolder:WaitForChild("UseFunction")
+-- Создаём папку remote и RemoteEvent, если их нет (самостоятельная установка)
+local remotesFolder = ReplicatedStorage:FindFirstChild("HelperSasnyRemotes")
+if not remotesFolder then
+	remotesFolder = Instance.new("Folder")
+	remotesFolder.Name = "HelperSasnyRemotes"
+	remotesFolder.Parent = ReplicatedStorage
+end
+
+local useFunctionEvent = remotesFolder:FindFirstChild("UseFunction")
+if not useFunctionEvent then
+	useFunctionEvent = Instance.new("RemoteEvent")
+	useFunctionEvent.Name = "UseFunction"
+	useFunctionEvent.Parent = remotesFolder
+end
 
 -- Кулдауны: [player] = { [funcName] = timestamp }
 local cooldowns = {}

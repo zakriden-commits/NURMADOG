@@ -12,8 +12,20 @@ local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
-local remotesFolder = ReplicatedStorage:WaitForChild("HelperSasnyRemotes")
-local useFunctionEvent = remotesFolder:WaitForChild("UseFunction")
+-- Ждём папку remote: сервер создаёт её сам при старте (иногда с небольшой задержкой)
+local remotesFolder = ReplicatedStorage:FindFirstChild("HelperSasnyRemotes")
+while not remotesFolder do
+	remotesFolder = ReplicatedStorage:FindFirstChild("HelperSasnyRemotes")
+	if remotesFolder then break end
+	task.wait(0.3)
+end
+
+local useFunctionEvent = remotesFolder:FindFirstChild("UseFunction")
+while not useFunctionEvent do
+	useFunctionEvent = remotesFolder:FindFirstChild("UseFunction")
+	if useFunctionEvent then break end
+	task.wait(0.3)
+end
 
 -- Цвета в стиле логотипа (фиолетовый + мятный)
 local COLORS = {
